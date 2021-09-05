@@ -1,0 +1,122 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Resources\StudentResource;
+use App\Models\Role;
+use App\Models\Student;
+use App\Models\StudentSubject;
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class StudentController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return StudentResource::collection(Student::paginate(20));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'phone_number' => 'required |unique:students',
+            'email' => 'required | email | unique:users'
+        ]);
+
+        $user = $this->createUser($data['email'], $data['first_name'], $data['last_name']);
+        $student = Student::create([
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'phone_number' => $data['phone_number'],
+            'user_id' => $user->id,
+            'enrollment_number' => $this->enrollmentNumber($user),
+        ]);
+
+        return new StudentResource($student);
+    }
+
+    public function enrollmentNumber($user)
+    {
+        return 'CS21' . $user->id . rand(1, 500);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Student  $student
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Student $student)
+    {
+        return new StudentResource($student);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Student  $student
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Student $student)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Student  $student
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Student $student)
+    {
+        $data = $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'phone_number' => 'required'
+        ]);
+        $student->update([
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'phone_number' => $data['phone_number'],
+            'user_id' => $student->user_id,
+            'enrollment_number' => $student->enrollment_number,
+        ]);
+        return new StudentResource($student);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Student  $student
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Student $student)
+    {
+        //
+    }
+}
