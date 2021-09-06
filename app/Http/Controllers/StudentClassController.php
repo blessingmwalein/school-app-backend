@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\StudentClassResource;
 use App\Models\StudentClass;
 use Illuminate\Http\Request;
 
@@ -35,7 +36,16 @@ class StudentClassController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'student_id'=> 'required ',
+            'class_id' => 'required'
+        ]);
+
+        $studentClass = StudentClass::where('student_id', $data['student_id'])->Where('class_id', $data['class_id'])->first();
+        if($studentClass){
+            return $this->responseMessage('Student Is Aready Enrolled In This Class', 422);
+        }
+        return new StudentClassResource(StudentClass::create($data));
     }
 
     /**

@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\ClassLevelController;
 use App\Http\Controllers\LevelController;
+use App\Http\Controllers\StudentClassController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
 use App\Models\ClassLevel;
+use App\Models\StudentClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,12 +38,13 @@ Route::prefix('v1')->group(function () {
         });
     });
     Route::middleware(['auth:sanctum', 'admin'])->group(function () {
-       Route::resource('levels', LevelController::class);
-       Route::post('subjects/store', [SubjectController::class, 'store']);
-       Route::put('subjects/update/{subject}', [SubjectController::class, 'update']);
-       Route::delete('subjects/delete/{subject}', [SubjectController::class, 'destroy']);
-       Route::post('classes/store', [ClassLevelController::class, 'store']);
-       Route::put('classes/update/{classLevel}', [ClassLevelController::class, 'update']);
+        Route::resource('levels', LevelController::class);
+        Route::post('subjects/store', [SubjectController::class, 'store']);
+        Route::put('subjects/update/{subject}', [SubjectController::class, 'update']);
+        Route::delete('subjects/delete/{subject}', [SubjectController::class, 'destroy']);
+        Route::post('classes/store', [ClassLevelController::class, 'store']);
+        Route::put('classes/update/{classLevel}', [ClassLevelController::class, 'update']);
+        Route::resource('student-classes', StudentClassController::class);
     });
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('subjects', [SubjectController::class, 'index']);
@@ -50,7 +53,11 @@ Route::prefix('v1')->group(function () {
         Route::get('classes', [ClassLevelController::class, 'index']);
         Route::get('classes/{classLevel}', [ClassLevelController::class, 'show']);
 
+        Route::get('students/all', [StudentController::class, 'all']);
+
         Route::resource('students', StudentController::class);
         Route::resource('teachers', TeacherController::class);
-     });
+
+        Route::get('/search/students', [StudentController::class, 'search']);
+    });
 });

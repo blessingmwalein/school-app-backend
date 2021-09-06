@@ -16,6 +16,10 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function all()
+    {
+        return StudentResource::collection(Student::all());
+    }
     public function index()
     {
         return StudentResource::collection(Student::paginate(20));
@@ -118,5 +122,14 @@ class StudentController extends Controller
     public function destroy(Student $student)
     {
         //
+    }
+
+    public function search(Request $request)
+    {
+        $students = Student::query()->where('first_name', 'LIKE', "%{$request['query']}%")
+            ->orWhere('last_name', 'LIKE', "%{$request['query']}%")
+            ->orWhere('enrollment_number', 'LIKE', "%{$request['query']}%")
+            ->get();
+        return StudentResource::collection($students);
     }
 }
