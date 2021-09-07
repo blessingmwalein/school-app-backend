@@ -10,6 +10,7 @@ class StudentClass extends Model
     use HasFactory;
     protected $guarded;
 
+    protected $with =['classe'];
 
     public function student()
     {

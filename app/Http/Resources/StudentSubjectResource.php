@@ -2,10 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Models\StudentSubject;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SubjectResource extends JsonResource
+class StudentSubjectResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,13 +16,8 @@ class SubjectResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'level_id' =>$this->level_id,
-            'level' => $this->level,
-            'teachers'=> $this->teachers,
-            'students'=> $this->students,
-            'icon' => $this->icon,
-            'created_at' => $this->created_at
+            'subject'=>new SubjectResource($this->subject),
+            'student'=> $this->student
         ];
     }
 }

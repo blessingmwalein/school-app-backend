@@ -22,6 +22,9 @@ class StudentResource extends JsonResource
             'enrollment_number' => $this->enrollment_number,
             'user_id' => $this->user_id,
             'user' => $this->user,
+            'subjects'=> StudentSubjectResource::collection($this->subjects),
+            'classe'=> $this->classe,
+            'home'=>$this->home,
             'created_at' => $this->created_at
         ];
     }

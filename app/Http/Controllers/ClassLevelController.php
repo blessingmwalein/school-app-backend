@@ -108,4 +108,13 @@ class ClassLevelController extends Controller
         }
         return $this->responseMessage("Something went wrong", 500);
     }
+
+    public function search(Request $request)
+    {
+        $classes = ClassLevel::query()->where('name', 'LIKE', "%{$request['query']}%")
+            ->orWhere('year', 'LIKE', "%{$request['query']}%")
+            ->orWhere('id', 'LIKE', "%{$request['query']}%")
+            ->get();
+        return ClassLevelResource::collection($classes);
+    }
 }

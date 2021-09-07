@@ -69,7 +69,7 @@ class TeacherController extends Controller
      */
     public function show(Teacher $teacher)
     {
-        //
+        return new TeacherResource($teacher);
     }
 
     /**
@@ -116,5 +116,14 @@ class TeacherController extends Controller
     public function destroy(Teacher $teacher)
     {
         //
+    }
+
+    public function search(Request $request)
+    {
+        $teachers = Teacher::query()->where('first_name', 'LIKE', "%{$request['query']}%")
+            ->orWhere('last_name', 'LIKE', "%{$request['query']}%")
+            ->orWhere('teacher_number', 'LIKE', "%{$request['query']}%")
+            ->get();
+        return TeacherResource::collection($teachers);
     }
 }

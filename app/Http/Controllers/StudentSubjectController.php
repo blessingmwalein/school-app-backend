@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\StudentSubjectResource;
 use App\Models\StudentSubject;
 use Illuminate\Http\Request;
 
@@ -35,7 +36,19 @@ class StudentSubjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'student_id' => 'required',
+            'subject_id'=> 'required'
+        ]);
+
+        $studentSubject = StudentSubject::where('student_id', $data['student_id'])->Where('subject_id', $data['subject_id'])->first();
+        if ($studentSubject) {
+            return $this->responseMessage('Student Is Aready Enrolled In This Subject', 422);
+        }
+        return new StudentSubjectResource(StudentSubject::create([
+            'student_id' => $data['student_id'],
+            'subject_id' => $data['subject_id']
+        ]));
     }
 
     /**

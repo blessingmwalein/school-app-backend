@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TeacherSubjectClassResource;
 use App\Models\TeacherSubjectClass;
 use Illuminate\Http\Request;
 
@@ -35,7 +36,17 @@ class TeacherSubjectClassController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'teacher_id' => 'required',
+            'class_id' => 'required',
+            'subject_id' => 'required'
+        ]);
+
+        $teacherSubjectClass = TeacherSubjectClass::where('teacher_id', $data['teacher_id'])->Where('subject_id', $data['subject_id'])->Where('class_id', $data['class_id'])->first();
+        if ($teacherSubjectClass) {
+            return $this->responseMessage('Teacher Is Aready Enrolled In This Subject', 422);
+        }
+        return new TeacherSubjectClassResource(TeacherSubjectClass::create($data));
     }
 
     /**

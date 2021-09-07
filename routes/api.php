@@ -4,8 +4,10 @@ use App\Http\Controllers\ClassLevelController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\StudentClassController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentSubjectController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\TeacherSubjectClassController;
 use App\Http\Controllers\UserController;
 use App\Models\ClassLevel;
 use App\Models\StudentClass;
@@ -45,6 +47,8 @@ Route::prefix('v1')->group(function () {
         Route::post('classes/store', [ClassLevelController::class, 'store']);
         Route::put('classes/update/{classLevel}', [ClassLevelController::class, 'update']);
         Route::resource('student-classes', StudentClassController::class);
+        Route::resource('teacher-subject-classes', TeacherSubjectClassController::class);
+        Route::resource('student-subjects', StudentSubjectController::class);
     });
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('subjects', [SubjectController::class, 'index']);
@@ -59,5 +63,7 @@ Route::prefix('v1')->group(function () {
         Route::resource('teachers', TeacherController::class);
 
         Route::get('/search/students', [StudentController::class, 'search']);
+        Route::get('/search/teachers', [TeacherController::class, 'search']);
+        Route::get('/search/classes', [ClassLevelController::class, 'search']);
     });
 });
