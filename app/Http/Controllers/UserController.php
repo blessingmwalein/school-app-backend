@@ -12,7 +12,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $data = $request->validate([
-            'email' => 'required | string',
+            'email' => 'required | string |email',
             'password' => 'required'
         ]);
 
@@ -21,7 +21,7 @@ class UserController extends Controller
         if (!$user || !Hash::check($data['password'], $user->password)) {
             return response([
                 'message' => "Credentials Dont Match Our Records"
-            ]);
+            ], 422);
         }
         $token = $user->createToken('myapptoken')->plainTextToken;
         $response = [
