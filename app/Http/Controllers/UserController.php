@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
+use App\Models\PasswordReset;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -29,5 +30,26 @@ class UserController extends Controller
             'token' => $token,
         ];
         return response($response, 201);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $data = $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|confirmed',
+            'token' => 'required'
+        ]);
+        $tokenData = PasswordReset::where('token', $data['token'])->first();
+        // dd($tokenData);
+        if(!$tokenData){
+            return $this->responseMessage('Invalid Link', 403);
+        }
+
+        $user = User::where('email', $data['email'])->first();
+        $user->password = Hash::make($data['password']);
+        $user->update(); //or $user->save();
+        $tokenData->delete();
+
+        return $this->responseMessage('Password Changed Can Login', 200);
     }
 }

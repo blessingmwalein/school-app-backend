@@ -8,6 +8,9 @@ use App\Models\Student;
 use App\Models\StudentSubject;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\SmsController;
+use App\Models\PasswordReset;
+use Illuminate\Support\Str;
 
 class StudentController extends Controller
 {
@@ -16,6 +19,16 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public $school;
+    public $password_reset;
+    protected $smsController;
+    public function __construct(SmsController $smsController)
+    {
+        $this->smsController = $smsController;
+        $this->school = getenv('SCHOOL');
+        $this->password_reset = getenv('password_reset');
+    }
+
     public function all()
     {
         return StudentResource::collection(Student::all());
@@ -59,6 +72,11 @@ class StudentController extends Controller
             'enrollment_number' => $this->enrollmentNumber($user),
         ]);
 
+        $password_reset = PasswordReset::create([
+            'email' => $request->email,
+            'token' => Str::random(60),
+        ]);
+        $this->smsController->sendSms($student->phone_number, "Hey $student->first_name $student->last_name your account for $this->school have been created use $user->email as username her is password reset link: $this->password_reset$password_reset->token");
         return new StudentResource($student);
     }
 

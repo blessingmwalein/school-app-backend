@@ -13,6 +13,8 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+
+
     public function responseMessage($message, $statusCode=200)
     {
         return response()->json(['message' => $message ], $statusCode);
@@ -29,5 +31,7 @@ class Controller extends BaseController
             'password' => $password,
         ]);
     }
+
+
 
 }

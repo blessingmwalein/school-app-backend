@@ -34,12 +34,14 @@ Route::prefix('v1')->group(function () {
     Route::prefix('user')->group(function () {
         Route::post('/register', [UserController::class, 'register']);
         Route::post('/login', [UserController::class, 'login']);
+        Route::post('/reset-password', [UserController::class, 'resetPassword']);
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/logout', [UserController::class, 'logout']);
             Route::post('/verify', [UserController::class, 'verifyTwilio']);
         });
     });
     Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+
         Route::resource('levels', LevelController::class);
         Route::post('subjects/store', [SubjectController::class, 'store']);
         Route::put('subjects/update/{subject}', [SubjectController::class, 'update']);
@@ -49,6 +51,7 @@ Route::prefix('v1')->group(function () {
         Route::resource('student-classes', StudentClassController::class);
         Route::resource('teacher-subject-classes', TeacherSubjectClassController::class);
         Route::resource('student-subjects', StudentSubjectController::class);
+
     });
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('subjects', [SubjectController::class, 'index']);
@@ -66,4 +69,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/search/teachers', [TeacherController::class, 'search']);
         Route::get('/search/classes', [ClassLevelController::class, 'search']);
     });
+
 });
+
+
